@@ -4,10 +4,13 @@ import com.darkprograms.speech.translator.GoogleTranslate;
 import com.growin.marvel.client.MarvelClient;
 import com.growin.marvel.model.Heroes;
 import com.growin.marvel.model.entities.Character;
+import com.growin.marvel.model.entities.Error;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.*;
@@ -40,18 +43,24 @@ public class HeroesService {
         return ids;
     }
 
-    public Object findCharacter(Integer id, String locale) throws IOException {
-        validateLanguage(locale);
-        Optional<Character> result = marvelClient.findCharacter(id, authTs, authPublicKey,
-                authHash).getData().getResults().stream().findFirst();
-        String translation = GoogleTranslate.translate(locale, result.get().getDescription());
-        result.get().setDescription(translation);
-        return result;
-    }
+    public Object findCharacter(Integer id, String locale){
+        try {
+            Optional<Character> result = marvelClient.findCharacter(id, authTs, authPublicKey,
+                    authHash).getData().getResults().stream().findFirst();
 
-    private void validateLanguage(String locale) {
-        if (!Arrays.asList(Locale.getISOLanguages()).contains(locale.toLowerCase())) {
-            //return null;
+            if(!StringUtils.isEmpty(locale)){
+                String translation = GoogleTranslate.translate(locale, result.get().getDescription());
+                result.get().setDescription(translation);
+            }
+            return result;
+        }catch(IOException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Error(String.valueOf(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()),HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
+                    +" - " + e.getMessage()));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new Error(String.valueOf(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value()),HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase()
+                    + " - " + e.getMessage()));
         }
     }
 
