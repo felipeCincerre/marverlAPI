@@ -58,7 +58,7 @@ The system runs in port 8080 (http://localhost:8080)
 
 ### Character
 
-The character module is a composed by 2 GET APIs.
+The character module is composed by 2 GET APIs.
 
 The basic actions runs on the endpoints:
 
