@@ -24,13 +24,17 @@ public class CharacterController {
 
     @RequestMapping(value = "/characters/{id}", method = RequestMethod.GET)
     public ResponseEntity getAllCharacters(@PathVariable Integer id,
-                                       @RequestParam(value = "language", required = false) String locale) {
+                                       @RequestParam(value = "languageCode", required = false) String locale) {
         if (isNotISOLanguage(locale)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Error(String.valueOf(
                     HttpStatus.BAD_REQUEST.value()),HttpStatus.BAD_REQUEST.getReasonPhrase()+
                     " - Wrong value for parameter language."));
         }
-        return  ResponseEntity.status(HttpStatus.OK).body(heroesService.findCharacter(id, locale));
+        Object response = heroesService.findCharacter(id, locale);
+        if(response instanceof Error){
+            return  ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+        return  ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
     private boolean isNotISOLanguage(String locale) {

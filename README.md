@@ -53,3 +53,14 @@ mvn spring-boot:run
 ```
 
 The system runs in port 8080 (http://localhost:8080)
+
+## Module information
+
+### Character
+
+The character module is a composed by 2 GET APIs.
+
+The basic actions runs on the endpoints:
+
+1. GET `/characters` - get all charactes' ids
+2. GET `/characters/{id}?language={languageCode}` - get a specific character. If languageCode is sent, then description will be tranlasted into the selected language.

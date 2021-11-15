@@ -1,8 +1,6 @@
 package com.growin.marvel;
 
 import com.growin.marvel.controller.CharacterController;
-import com.growin.marvel.model.entities.Character;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -41,10 +39,17 @@ class MarvelApplicationTests {
 	}
 
 	@Test
-	public void getCharacterByIdWithLanguageError() {
+	public void getCharacterByIdWithLanguageBadRequestError() {
 		Integer id = 1009144;
 		ResponseEntity response = controller.getAllCharacters(id, "gg");
 		Assert.assertEquals("400", String.valueOf(response.getStatusCode().value()));
+	}
+
+	@Test
+	public void getCharacterByIdWithLanguageIneternalServerError() {
+		Integer id = 10;
+		ResponseEntity response = controller.getAllCharacters(id, "en");
+		Assert.assertEquals("500", String.valueOf(response.getStatusCode().value()));
 	}
 
 }

@@ -1,12 +1,12 @@
 package com.growin.marvel.configuration;
 
-import java.sql.Timestamp;
-
 import com.growin.marvel.utils.MarvelUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
+
+import java.sql.Timestamp;
 
 @Configuration
 public class AuthConfiguration {
